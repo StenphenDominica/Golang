@@ -1,12 +1,12 @@
 package main
 
 import (
-	// "fmt"
 	"errors"
+	"fmt"
 	"html/template"
-	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"regexp"
 )
 
@@ -15,21 +15,40 @@ type Page struct {
 	Body  []byte
 }
 
+// os file operation
+func changeCurrentDirectoty(dirName string) error {
+	err := os.Chdir(dirName)
+	if err != nil {
+		os.Mkdir(dirName, 0600)
+	}
+	err = os.Chdir(dirName)
+	currentDir, _ := os.Getwd()
+	fmt.Println("Current working directory:", currentDir)
+	return err
+
+}
+
+func moveTemplatesToNewDirectory() {
+	changeCurrentDirectoty("")
+}
+
+// Page data
 func (p *Page) save() error {
 	filename := p.Title + ".txt"
-	return ioutil.WriteFile(filename, p.Body, 0600)
+	return os.WriteFile(filename, p.Body, 0600)
 }
 
 func loadPage(title string) (*Page, error) {
 	filename := title + ".txt"
-	body, err := ioutil.ReadFile(filename)
+	body, err := os.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
 	return &Page{Title: title, Body: body}, nil
 }
 
-var templates = template.Must(template.ParseFiles("edit.html", "view.html"))
+// template
+var templates = template.Must(template.ParseFiles("tmpl/edit.html", "tmpl/view.html"))
 
 func renderTemplate(w http.ResponseWriter, tmpl string, p *Page) {
 	// t, err := template.ParseFiles(tmpl + ".html")
@@ -40,6 +59,7 @@ func renderTemplate(w http.ResponseWriter, tmpl string, p *Page) {
 	}
 }
 
+// handler
 var validPath = regexp.MustCompile("^/(edit|save|view)/([a-zA-Z0-9]+)$")
 
 func getTitle(w http.ResponseWriter, r *http.Request) (string, error) {
@@ -111,6 +131,8 @@ func main() {
 	// http.HandleFunc("/view/", viewHandler)
 	// http.HandleFunc("/edit/", editHandler)
 	// http.HandleFunc("/save/", saveHandler)
+	changeCurrentDirectoty("data")
+	moveTemplatesToNewDirectory()
 
 	http.HandleFunc("/view/", makeHandler(viewHandler))
 	http.HandleFunc("/edit/", makeHandler(editHandler))
