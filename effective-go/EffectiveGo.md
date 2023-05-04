@@ -89,3 +89,5 @@ For example, in long **if-else** chain. You'll see it used often. This unusual p
 It's worth noting here that in Go the scope of funtion parameters and return values in the same as the function body, even though they appear lexically outside the braces that enclose the body.
 
 ## for
+
+The Go for loop is similar to—but not the same as—C's. It unifies for and while and there is no do-while. There are three forms, only one of which has semicolons.
