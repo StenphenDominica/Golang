@@ -1,3 +1,3 @@
-module example.com/greetings
+module stephenzzz.com/greetings
 
 go 1.20

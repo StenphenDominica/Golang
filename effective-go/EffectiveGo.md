@@ -89,7 +89,6 @@ For example, in long **if-else** chain. You'll see it used often. This unusual p
 It's worth noting here that in Go the scope of function parameters and return values in the same as the function body, even though they appear lexically outside the braces that enclose the body.
 
 ## for
-
 The Go for loop is similar to—but not the same as—C's. It unifies for and while and there is no do-while. There are three forms, only one of which has semicolons.
 ```
 // Like a C for
@@ -101,3 +100,8 @@ for condition { }
 // Like a C for(;;)
 for { }
 ```
+
+## Switch
+Go's switch is more general than C's. The expressions need not be constants or even integers, the cases are evaluated top to bottom until a match is found, and if the switch has no expression it switches on true. It's therefore possible-and idiomatic-to write an if-else-if-else chain as a switch.
+
+There is no automatic fall through, but cases can be presented in comma-separated lists.

@@ -14,9 +14,8 @@ func main() {
 	fmt.Println(quote.Go())
 
 	greet("Stephen")
-	// greet("")
 
-	names := []string{"Gladys", "Simons", "Drwin"}
+	names := []string{"Gladys", "Simmons", "Darwin"}
 	greets(names)
 }
 
