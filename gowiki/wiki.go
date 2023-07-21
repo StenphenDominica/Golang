@@ -16,7 +16,7 @@ type Page struct {
 }
 
 // os file operation
-func changeCurrentDirectoty(dirName string) error {
+func changeCurrentDirectory(dirName string) error {
 	err := os.Chdir(dirName)
 	if err != nil {
 		os.Mkdir(dirName, 0600)
@@ -25,17 +25,22 @@ func changeCurrentDirectoty(dirName string) error {
 	currentDir, _ := os.Getwd()
 	fmt.Println("Current working directory:", currentDir)
 	return err
+}
 
+func modifyCurrentDirectory(dirName string) error {
+	err := os.Chdir(dirName)
+	if err != nil {
+		os.Mkdir(dirName, 0600)
+	}
+	err = os.Chdir(dirName)
+	currentDir, _ := os.Getwd()
+	fmt.Println("Current working directory:", currentDir)
+
+	return err
 }
 
 func moveTemplatesToNewDirectory() {
-	changeCurrentDirectoty("")
-}
-
-// Page data
-func (p *Page) save() error {
-	filename := p.Title + ".txt"
-	return os.WriteFile(filename, p.Body, 0600)
+	changeCurrentDirectory("")
 }
 
 func loadPage(title string) (*Page, error) {
@@ -45,6 +50,26 @@ func loadPage(title string) (*Page, error) {
 		return nil, err
 	}
 	return &Page{Title: title, Body: body}, nil
+}
+
+func initPage(title string) (*Page, error) {
+	fileName := title + ".txt"
+	body, err := os.ReadFile(fileName)
+	if err != nil {
+		return nil, err
+	}
+	return &Page{Title: title, Body: body}, nil
+}
+
+// Page data
+func (p *Page) save() error {
+	filename := p.Title + ".txt"
+	return os.WriteFile(filename, p.Body, 0600)
+}
+
+func (p *Page) store() error {
+	filename := p.Title + ".txt"
+	return os.WriteFile(filename, p.Body, 0600)
 }
 
 // template
@@ -66,7 +91,7 @@ func getTitle(w http.ResponseWriter, r *http.Request) (string, error) {
 	m := validPath.FindStringSubmatch(r.URL.Path)
 	if m == nil {
 		http.NotFound(w, r)
-		return "", errors.New("invaild Page Title")
+		return "", errors.New("invalid Page Title")
 	}
 	return m[2], nil //
 }
@@ -131,12 +156,14 @@ func main() {
 	// http.HandleFunc("/view/", viewHandler)
 	// http.HandleFunc("/edit/", editHandler)
 	// http.HandleFunc("/save/", saveHandler)
-	changeCurrentDirectoty("data")
+
+	changeCurrentDirectory("data")
 	moveTemplatesToNewDirectory()
 
 	http.HandleFunc("/view/", makeHandler(viewHandler))
 	http.HandleFunc("/edit/", makeHandler(editHandler))
 	http.HandleFunc("/save/", makeHandler(saveHandler))
 
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	port := ":8089"
+	log.Fatal(http.ListenAndServe(port, nil))
 }

@@ -1,24 +1,24 @@
-// package main
-package hello
+package main
+
+// package hello
 
 import (
 	"fmt"
 	"log"
 
-	// "rsc.io/quote"
-
 	"example.com/greetings"
+	"rsc.io/quote"
 )
 
-// func main() {
-// 	fmt.Println("Hello, World!")
-// 	fmt.Println(quote.Go())
+func main() {
+	fmt.Println("Hello, World!")
+	fmt.Println(quote.Go())
 
-// 	greet("Stephen")
+	greet("Stephen")
 
-// 	names := []string{"Gladys", "Simmons", "Darwin"}
-// 	greets(names)
-// }
+	names := []string{"Gladys", "Simmons", "Darwin"}
+	greets(names)
+}
 
 func greet(name string) {
 	message, err := greetings.Hello(name)
